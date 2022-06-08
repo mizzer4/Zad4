@@ -1,25 +1,19 @@
-from class_defs import Knapsack, Items
+from helpers import sort_by_ratio
 
-"""
-def greedy_algorithm(knapsack, items_param):
-    items = items_param.get_items()
 
-    for item in items:
-        if item.volume <= knapsack.volume_left:
-            knapsack.items.add_item(item)
-            knapsack.volume_left -= item.volume
-"""
-def greedy_algorithm(volume_left, values, volumes):
+def greedy_algorithm(items, volume_left):
     value = 0
 
-    for i in range(len(volumes)):
-        if volumes[i] <= volume_left:
-            value += values[i]
-            volume_left -= volumes[i]
+    sort_by_ratio(items)
 
+    for i in range(len(items)):
+        if items[i][1] <= volume_left:
+            value += items[i][0]
+            volume_left -= items[i][1]
+        
     return value
 
-def dynamic_prog_algorithm(num_items, max_volume, values, volumes):
+def dynamic_prog_algorithm(items, num_items, max_volume):
 
     table = [[0 for x in range(max_volume + 1)] for y in range(num_items + 1)]
 
@@ -27,8 +21,8 @@ def dynamic_prog_algorithm(num_items, max_volume, values, volumes):
         for vol_unit in range(max_volume + 1):
             if item==0 or vol_unit==0:
                 table[item][vol_unit] = 0
-            elif volumes[item-1] <= vol_unit:
-                table[item][vol_unit] = max(values[item-1] + table[item-1][vol_unit - volumes[item-1]], table[item-1][vol_unit]) 
+            elif items[item-1][1] <= vol_unit:
+                table[item][vol_unit] = max(items[item-1][0] + table[item-1][vol_unit - items[item-1][1]], table[item-1][vol_unit]) 
             else:
                 table[item][vol_unit] = table[item-1][vol_unit]
 
